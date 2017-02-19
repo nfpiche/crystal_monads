@@ -6,5 +6,3 @@ module CrystalMonads
     x.bind { |arr| arr.map(&.succ) }
   end
 end
-
-puts CrystalMonads.foo

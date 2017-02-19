@@ -10,8 +10,16 @@ module CrystalMonads
     end
 
     class Right(T) < Either(T)
+      def fmap(*args, &block : T -> U)
+        Right.new(bind { yield @value, *args })
+      end
+
       def fmap(&block : T -> U)
-        Right.new(yield(@value))
+        Right.new(bind(&block))
+      end
+
+      def fmap(*args)
+        Right.new(bind(*args))
       end
 
       def bind(*args, &block : T -> U)
@@ -59,6 +67,10 @@ module CrystalMonads
 
       def bind(*args)
          self
+      end
+
+      def fmap(&block : T -> U)
+        self
       end
 
       def or(&block)

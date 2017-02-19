@@ -27,16 +27,33 @@ describe CrystalMonads::Either::Right do
   end
 
   describe ".fmap" do
-    it "calls method when a mehtod is given, then wraps in Right" do
-      result = right.fmap(&.succ)
-      result.should be_a CrystalMonads::Either::Right(Int32)
-      result.value.should eq(6)
-    end
-
     it "uses a block when a block is given, then wraps in Right" do
       result = right.fmap { |x| x + 5 }
       result.should be_a CrystalMonads::Either::Right(Int32)
       result.value.should eq(10)
+    end
+
+    it "handles additional arguments, then wraps in Right" do
+      result = right.fmap(:foo) do |value, c|
+        value.as(Int32).should eq(5)
+        c.as(Symbol).should eq(:foo)
+        true
+      end
+
+      result.should be_a CrystalMonads::Either::Right(Bool)
+      result.value.should be_true
+    end
+
+    it "handles additonal arguments in proc, then wraps in Right" do
+      proc = -> (value : Int32, c : Symbol) do
+        value.should eq(5)
+        c.should eq(:foo)
+        true
+      end
+
+      result = right.fmap(proc, :foo)
+      result.should be_a CrystalMonads::Either::Right(Bool)
+      result.value.should eq(true)
     end
 
     it "can be chained with other Right methods" do
