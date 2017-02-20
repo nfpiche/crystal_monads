@@ -3,7 +3,7 @@ require "./spec_helper"
 describe CrystalMonads::Either::Right do
   right = CrystalMonads::Either::Right.new(5)
 
-  describe ".bind" do
+  describe "#bind" do
     it "passes extra arguments to block" do
       right.bind(:foo) do |value, c|
         value.as(Int32).should eq(5)
@@ -24,9 +24,13 @@ describe CrystalMonads::Either::Right do
     it "uses block when a block is given" do
       right.bind { |x| x + 5 }.should eq(10)
     end
+
+    it "raises proper errors when used improperly" do
+      expect_raises(ArgumentError) { right.bind(1, 2) }
+    end
   end
 
-  describe ".fmap" do
+  describe "#fmap" do
     it "uses a block when a block is given, then wraps in Right" do
       result = right.fmap { |x| x + 5 }
       result.should be_a CrystalMonads::Either::Right(Int32)
@@ -64,7 +68,7 @@ describe CrystalMonads::Either::Right do
     end
   end
 
-  describe ".or" do
+  describe "#or" do
     it "does not use block in or calls" do
       right.or { |x| x.should be_false}.should eq(right)
     end
@@ -74,25 +78,25 @@ describe CrystalMonads::Either::Right do
     end
   end
 
-  describe ".value" do
+  describe "#value" do
     it "returns the value that is wrapped" do
       right.value.should eq(5)
     end
   end
 
-  describe ".right?" do
+  describe "#right?" do
     it "returns true" do
       right.right?.should be_true
     end
   end
 
-  describe ".left?" do
+  describe "#left?" do
     it "returns false" do
       right.left?.should be_false
     end
   end
 
-  describe ".to_s" do
+  describe "#to_s" do
     it "returns a string representation of Right" do
       right.to_s.should eq("Right(5)")
     end

@@ -32,7 +32,12 @@ module CrystalMonads
 
       def bind(*args)
         func, rest = args
+        raise ArgumentError.new("First arg must be callable")  unless func.responds_to? :call
         func.call(@value, rest)
+      end
+
+      def or(*args, &block : T -> U)
+        self
       end
 
       def or(&block : T -> U)
@@ -58,27 +63,35 @@ module CrystalMonads
 
     class Left(T) < Either(T)
       def bind(*args, &block : T -> U)
-         self
+        self
       end
 
       def bind(&block : T -> U)
-         self
+        self
       end
 
       def bind(*args)
-         self
+        self
+      end
+
+      def fmap(*args, &block : T -> U)
+        self
       end
 
       def fmap(&block : T -> U)
         self
       end
 
-      def or(&block)
-        yield(@value)
+      def fmap(*args)
+        self
       end
 
-      def or(*args)
-        args[0]
+      def or(*args, &block : T -> U)
+        yield(@value, *args)
+      end
+
+      def or(&block : T -> U)
+        yield(@value)
       end
 
       def left? : Bool
@@ -91,16 +104,6 @@ module CrystalMonads
 
       def to_s : String
         "Left(#{@value})"
-      end
-    end
-
-    module Mixin
-      def self.right(value) : Right
-        Right.new(value)
-      end
-
-      def self.left(value) : Left
-        Left.new(value)
       end
     end
   end
