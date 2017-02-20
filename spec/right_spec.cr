@@ -37,6 +37,16 @@ describe CrystalMonads::Either::Right do
       result.value.should eq(10)
     end
 
+    it "applys proc, then wraps in Right" do
+      proc = -> (value : Int32) do
+        value.even?
+      end
+
+      result = right.fmap(proc)
+      result.should be_a CrystalMonads::Either::Right(Bool)
+      result.value.should be_false
+    end
+
     it "handles additional arguments, then wraps in Right" do
       result = right.fmap(:foo) do |value, c|
         value.as(Int32).should eq(5)

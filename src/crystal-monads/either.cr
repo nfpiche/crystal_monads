@@ -9,12 +9,20 @@ module CrystalMonads
       self
     end
 
+    def right? : Bool
+      self.is_a? Right
+    end
+
+    def left? : Bool
+      self.is_a? Left
+    end
+
     class Right(T) < Either(T)
-      def fmap(*args, &block : T -> U)
+      def fmap(*args, &block : T -> _)
         Right.new(bind { yield @value, *args })
       end
 
-      def fmap(&block : T -> U)
+      def fmap(&block : T -> _)
         Right.new(bind(&block))
       end
 
@@ -22,12 +30,16 @@ module CrystalMonads
         Right.new(bind(*args))
       end
 
-      def bind(*args, &block : T -> U)
+      def bind(*args, &block : T -> _)
         yield(@value, *args)
       end
 
-      def bind(&block : T -> U)
+      def bind(&block : T -> _)
         yield(@value)
+      end
+
+      def bind(proc : Proc)
+        proc.call(@value)
       end
 
       def bind(*args)
@@ -36,24 +48,16 @@ module CrystalMonads
         func.call(@value, rest)
       end
 
-      def or(*args, &block : T -> U)
+      def or(*args, &block : T -> _)
         self
       end
 
-      def or(&block : T -> U)
+      def or(&block : T -> _)
         self
       end
 
       def or(*args)
         self
-      end
-
-      def left? : Bool
-        false
-      end
-
-      def right? : Bool
-        true
       end
 
       def to_s : String
@@ -62,11 +66,11 @@ module CrystalMonads
     end
 
     class Left(T) < Either(T)
-      def bind(*args, &block : T -> U)
+      def bind(*args, &block : T -> _)
         self
       end
 
-      def bind(&block : T -> U)
+      def bind(&block : T -> _)
         self
       end
 
@@ -74,11 +78,11 @@ module CrystalMonads
         self
       end
 
-      def fmap(*args, &block : T -> U)
+      def fmap(*args, &block : T -> _)
         self
       end
 
-      def fmap(&block : T -> U)
+      def fmap(&block : T -> _)
         self
       end
 
@@ -86,20 +90,12 @@ module CrystalMonads
         self
       end
 
-      def or(*args, &block : T -> U)
+      def or(*args, &block : T -> _)
         yield(@value, *args)
       end
 
-      def or(&block : T -> U)
+      def or(&block : T -> _)
         yield(@value)
-      end
-
-      def left? : Bool
-        true
-      end
-
-      def right? : Bool
-        false
       end
 
       def to_s : String
