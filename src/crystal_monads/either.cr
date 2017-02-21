@@ -34,18 +34,16 @@ module CrystalMonads
         yield(@value, *args)
       end
 
+      def bind(proc : Proc, *args)
+        proc.call(@value, *args)
+      end
+
       def bind(&block : T -> _)
         yield(@value)
       end
 
-      def bind(proc : Proc)
-        proc.call(@value)
-      end
-
-      def bind(*args)
-        func, rest = args
-        raise ArgumentError.new("First arg must be callable")  unless func.responds_to? :call
-        func.call(@value, rest)
+      def or(proc : Proc, *args)
+        self
       end
 
       def or(*args, &block : T -> _)
@@ -56,28 +54,12 @@ module CrystalMonads
         self
       end
 
-      def or(*args)
-        self
-      end
-
       def to_s : String
         "Right(#{@value})"
       end
     end
 
     class Left(T) < Either(T)
-      def bind(*args, &block : T -> _)
-        self
-      end
-
-      def bind(&block : T -> _)
-        self
-      end
-
-      def bind(*args)
-        self
-      end
-
       def fmap(*args, &block : T -> _)
         self
       end
@@ -88,6 +70,22 @@ module CrystalMonads
 
       def fmap(*args)
         self
+      end
+
+      def bind(*args, &block : T -> _)
+        self
+      end
+
+      def bind(proc : Proc, *args)
+        self
+      end
+
+      def bind(&block : T -> _)
+        self
+      end
+
+      def or(proc : Proc, *args)
+        proc.call(@value, *args)
       end
 
       def or(*args, &block : T -> _)

@@ -25,8 +25,9 @@ describe CrystalMonads::Either::Right do
       right.bind { |x| x + 5 }.should eq(10)
     end
 
-    it "raises proper errors when used improperly" do
-      expect_raises(ArgumentError) { right.bind(1, 2) }
+    it "applys proc" do
+      proc = -> (value : Int32) { value.even? }
+      right.bind(proc).should be_false
     end
   end
 
@@ -38,16 +39,13 @@ describe CrystalMonads::Either::Right do
     end
 
     it "applys proc, then wraps in Right" do
-      proc = -> (value : Int32) do
-        value.even?
-      end
-
+      proc = -> (value : Int32) { value.even? }
       result = right.fmap(proc)
       result.should be_a CrystalMonads::Either::Right(Bool)
       result.value.should be_false
     end
 
-    it "handles additional arguments, then wraps in Right" do
+    it "handles additional arguments in block, then wraps in Right" do
       result = right.fmap(:foo) do |value, c|
         value.as(Int32).should eq(5)
         c.as(Symbol).should eq(:foo)
@@ -83,8 +81,13 @@ describe CrystalMonads::Either::Right do
       right.or { |x| x.should be_false}.should eq(right)
     end
 
-    it "does not use args passed in" do
-      right.or(false).should eq(right)
+    it "does not use proc passed in" do
+      right.or(&.even?).should eq(right)
+    end
+
+    it "does not use proc passed in with args" do
+      proc = -> (value : Int32) { value.even? }
+      right.or(proc, 5).should eq(right)
     end
   end
 

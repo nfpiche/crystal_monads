@@ -1,2 +1,2 @@
 require "spec"
-require "../src/crystal-monads"
+require "../src/crystal_monads"

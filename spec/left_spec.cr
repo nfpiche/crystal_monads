@@ -5,7 +5,15 @@ describe CrystalMonads::Either::Left do
 
   describe "#bind" do
     it "returns self when given a block with args" do
-      left.bind(:foo) { |value, c| false.should be_true }.should eq(left)
+      left.bind(:foo) { false.should be_true }.should eq(left)
+    end
+
+    it "returns self when given a proc" do
+      proc = -> () do
+        false.should be_true
+      end
+
+      left.bind(proc).should eq(left)
     end
 
     it "returns self when given a proc with args" do
@@ -38,9 +46,15 @@ describe CrystalMonads::Either::Left do
     end
 
     it "returns self when given a proc" do
-      proc = -> (value : Int32, c : Symbol) do
-        true
-      end
+      proc = -> () { true }
+
+      result = left.fmap(proc, :foo)
+      result.should be_a CrystalMonads::Either::Left(Int32)
+      result.should eq(left)
+    end
+
+    it "returns self when given a proc with args" do
+      proc = -> (value : Int32, c : Symbol) { true }
 
       result = left.fmap(proc, :foo)
       result.should be_a CrystalMonads::Either::Left(Int32)
@@ -60,6 +74,10 @@ describe CrystalMonads::Either::Left do
       left.or { |x| x + 5 }.should eq(10)
     end
 
+    it "uses the proc" do
+      left.or(&.odd?).should be_true
+    end
+
     it "passes extra arguments to the block" do
       left.or(:foo, :bar) do |value, a, b|
         value.as(Int32).should eq(5)
@@ -67,6 +85,16 @@ describe CrystalMonads::Either::Left do
         b.as(Symbol).should eq(:bar)
         false
       end.should be_false
+    end
+
+    it "passes extra arguments to proc" do
+      proc = -> (value : Int32, c : Symbol) do
+        value.should eq(5)
+        c.should eq(:foo)
+        true
+      end
+
+      left.or(proc, :foo).should be_true
     end
   end
 

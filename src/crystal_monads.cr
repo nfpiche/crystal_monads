@@ -1,4 +1,4 @@
-require "./crystal-monads/*"
+require "./crystal_monads/*"
 
 module CrystalMonads
   def self.foo
