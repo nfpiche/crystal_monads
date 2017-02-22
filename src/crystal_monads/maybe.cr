@@ -1,6 +1,6 @@
 module CrystalMonads
   module Maybe
-    def self.build(value)
+    def self.lift(value)
       if value.nil?
         None.new
       else
@@ -10,6 +10,8 @@ module CrystalMonads
   end
 
   class Some(T)
+    getter :value
+
     def initialize(@value : T)
     end
 
@@ -23,6 +25,18 @@ module CrystalMonads
 
     def bind(&block : T -> _)
       yield(@value)
+    end
+
+    def fmap(proc : Proc, *args)
+      Maybe.lift(proc.call(@value, *args))
+    end
+
+    def fmap(*args, &block : T -> _)
+      Maybe.lift(yield(@value, *args))
+    end
+
+    def fmap(&block : T -> _)
+      Maybe.lift(yield(@value))
     end
   end
 
@@ -43,6 +57,18 @@ module CrystalMonads
     end
 
     def bind(&block)
+      self
+    end
+
+    def fmap(proc : Proc, *args)
+      self
+    end
+
+    def fmap(*args, &block)
+      self
+    end
+
+    def fmap(&block)
       self
     end
 
