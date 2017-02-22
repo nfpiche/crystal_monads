@@ -39,19 +39,19 @@ module CrystalMonads
       Maybe.lift(yield(@value))
     end
 
-    def or(proc : Proc, *args)
+    def or(proc : Proc, *args) : Some(T)
       self
     end
 
-    def or(*args, &block)
+    def or(*args, &block) : Some(T)
       self
     end
 
-    def or(&block)
+    def or(&block) : Some(T)
       self
     end
 
-    def to_s
+    def to_s : String
       "Some(#{value})"
     end
   end
@@ -60,31 +60,31 @@ module CrystalMonads
     def initialize
     end
 
-    def value
+    def value : Nil
       nil
     end
 
-    def bind(proc : Proc, *args)
+    def bind(proc : Proc, *args) : None
       self
     end
 
-    def bind(*args, &block)
+    def bind(*args, &block) : None
       self
     end
 
-    def bind(&block)
+    def bind(&block) : None
       self
     end
 
-    def fmap(proc : Proc, *args)
+    def fmap(proc : Proc, *args) : None
       self
     end
 
-    def fmap(*args, &block)
+    def fmap(*args, &block) : None
       self
     end
 
-    def fmap(&block)
+    def fmap(&block) : None
       self
     end
 
@@ -100,7 +100,7 @@ module CrystalMonads
       yield
     end
 
-    def to_s
+    def to_s : String
       "None()"
     end
   end

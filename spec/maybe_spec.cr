@@ -134,6 +134,12 @@ describe CrystalMonads do
         some_maybe.or(:foo) { |c| c.as(Symbol).should be_a Int32 }.should eq(some_maybe)
       end
     end
+
+    describe "#to_s" do
+      it "returns a String representations of Some" do
+        some_maybe.to_s.should eq("Some(5)")
+      end
+    end
   end
 
   describe CrystalMonads::None do
@@ -194,6 +200,12 @@ describe CrystalMonads do
 
       it "returns self object when given a block with arguments" do
         none_maybe.or(3, 2) { |a, b| a > b}.should be_true
+      end
+    end
+
+    describe "#to_s" do
+      it "returns a String representations of None" do
+        none_maybe.to_s.should eq("None()")
       end
     end
   end
