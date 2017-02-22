@@ -42,45 +42,49 @@ module CrystalMonads
         yield(@value)
       end
 
-      def or(proc : Proc, *args)
+      def or(proc : Proc, *args) : Right(T)
         self
       end
 
-      def or(*args, &block : T -> _)
+      def or(*args, &block : T -> _) : Right(T)
         self
       end
 
-      def or(&block : T -> _)
+      def or(&block : T -> _) : Right(T)
         self
       end
 
       def to_s : String
         "Right(#{@value})"
       end
+
+      def to_maybe : CrystalMonads::Some(T)
+        CrystalMonads::Some.new(@value)
+      end
     end
 
     class Left(T) < Either(T)
-      def fmap(*args, &block : T -> _)
+      def fmap(*args, &block : T -> _) : Left(T)
         self
       end
 
-      def fmap(&block : T -> _)
+      def fmap(&block : T -> _) : Left(T)
         self
       end
 
-      def fmap(*args)
+      def fmap(*args) : Left(T)
         self
       end
 
-      def bind(*args, &block : T -> _)
+      def bind(*args, &block : T -> _) : Left(T)
         self
       end
 
-      def bind(proc : Proc, *args)
+      def bind(proc : Proc, *args) : Left(T)
         self
       end
 
-      def bind(&block : T -> _)
+      def bind(&block : T -> _) : Left(T)
         self
       end
 
@@ -98,6 +102,10 @@ module CrystalMonads
 
       def to_s : String
         "Left(#{@value})"
+      end
+
+      def to_maybe : CrystalMonads::None
+        CrystalMonads::None.new
       end
     end
   end

@@ -110,15 +110,24 @@ describe CrystalMonads::Either::Left do
     end
   end
 
-  describe ".left?" do
+  describe "#left?" do
     it "returns true" do
       left.left?.should be_true
     end
   end
 
-  describe ".to_s" do
+  describe "#to_s" do
     it "returns a string representation of Left" do
       left.to_s.should eq("Left(5)")
+    end
+  end
+
+  describe "#to_maybe" do
+    it "returns a None" do
+      maybe = left.to_maybe
+
+      maybe.should be_a CrystalMonads::None
+      maybe.value.should be_nil
     end
   end
 end
