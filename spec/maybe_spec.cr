@@ -114,6 +114,26 @@ describe CrystalMonads do
         end
       end
     end
+
+    describe "#or" do
+      it "returns self object when given a Proc" do
+        proc = -> () { false.should be_true }
+        some_maybe.or(proc).should eq(some_maybe)
+      end
+
+      it "returns self object when given a Proc with arguments" do
+        proc = -> (c : Symbol) { c.should be_a Int32 }
+        some_maybe.or(proc, :foo).should eq(some_maybe)
+      end
+
+      it "returns self object when given a block" do
+        some_maybe.or { false.should be_true }.should eq(some_maybe)
+      end
+
+      it "returns self object when given a block with arguments" do
+        some_maybe.or(:foo) { |c| c.as(Symbol).should be_a Int32 }.should eq(some_maybe)
+      end
+    end
   end
 
   describe CrystalMonads::None do
@@ -154,6 +174,26 @@ describe CrystalMonads do
 
       it "returns self object when given a block with arguments" do
         none_maybe.fmap(:foo) { |c| c.as(Symbol).should be_a Int32 }.should eq(none_maybe)
+      end
+    end
+
+    describe "#or" do
+      it "returns the value the proc evaluates to" do
+        proc = -> () { true }
+        none_maybe.or(proc).should be_true
+      end
+
+      it "returns the value the proc with arguments evaluates to" do
+        proc = -> (a : Int32, b : Int32) { a > b }
+        none_maybe.or(proc, 3, 2).should be_true
+      end
+
+      it "returns the value the block evalutes to" do
+        none_maybe.or { true }.should be_true
+      end
+
+      it "returns self object when given a block with arguments" do
+        none_maybe.or(3, 2) { |a, b| a > b}.should be_true
       end
     end
   end

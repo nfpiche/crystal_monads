@@ -38,6 +38,22 @@ module CrystalMonads
     def fmap(&block : T -> _)
       Maybe.lift(yield(@value))
     end
+
+    def or(proc : Proc, *args)
+      self
+    end
+
+    def or(*args, &block)
+      self
+    end
+
+    def or(&block)
+      self
+    end
+
+    def to_s
+      "Some(#{value})"
+    end
   end
 
   class None
@@ -70,6 +86,18 @@ module CrystalMonads
 
     def fmap(&block)
       self
+    end
+
+    def or(proc : Proc, *args)
+      proc.call(*args)
+    end
+
+    def or(*args, &block)
+      yield(*args)
+    end
+
+    def or(&block)
+      yield
     end
 
     def to_s
