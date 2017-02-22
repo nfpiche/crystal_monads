@@ -4,7 +4,7 @@ describe CrystalMonads::Either::Left do
   left = CrystalMonads::Either::Left.new(5)
 
   describe "#bind" do
-    it "returns self when given a block with args" do
+    it "returns self when given a block with arguments" do
       left.bind(:foo) { false.should be_true }.should eq(left)
     end
 
@@ -16,7 +16,7 @@ describe CrystalMonads::Either::Left do
       left.bind(proc).should eq(left)
     end
 
-    it "returns self when given a proc with args" do
+    it "returns self when given a proc with arguments" do
       proc = -> (value : Int32, c : Symbol) do
         false.should be_true
       end
@@ -36,7 +36,7 @@ describe CrystalMonads::Either::Left do
       result.should eq(left)
     end
 
-    it "returns self when given a block with extra args" do
+    it "returns self when given a block with extra arguments" do
       result = left.fmap(:foo) do |value, c|
         true
       end
@@ -53,7 +53,7 @@ describe CrystalMonads::Either::Left do
       result.should eq(left)
     end
 
-    it "returns self when given a proc with args" do
+    it "returns self when given a proc with arguments" do
       proc = -> (value : Int32, c : Symbol) { true }
 
       result = left.fmap(proc, :foo)
@@ -126,7 +126,7 @@ describe CrystalMonads::Either::Left do
     it "returns a None" do
       maybe = left.to_maybe
 
-      maybe.should be_a CrystalMonads::None
+      maybe.should be_a CrystalMonads::Maybe::None
       maybe.value.should be_nil
     end
   end

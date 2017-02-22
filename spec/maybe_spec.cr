@@ -7,13 +7,13 @@ describe CrystalMonads do
   describe CrystalMonads::Maybe do
     describe "#lift" do
       it "returns expected type" do
-        some_maybe.should be_a CrystalMonads::Some(Int32)
-        none_maybe.should be_a CrystalMonads::None
+        some_maybe.should be_a CrystalMonads::Maybe::Some(Int32)
+        none_maybe.should be_a CrystalMonads::Maybe::None
       end
     end
   end
 
-  describe CrystalMonads::Some do
+  describe CrystalMonads::Maybe::Some do
     describe "#bind" do
       it "returns the value applied to the Proc" do
         some_maybe.bind(&.even?).should be_false
@@ -53,7 +53,7 @@ describe CrystalMonads do
         it "returns Some when proc evaluates to non-nil value" do
           result = some_maybe.fmap(proc)
 
-          result.should be_a CrystalMonads::Some(Int32)
+          result.should be_a CrystalMonads::Maybe::Some(Int32 | Nil)
           result.value.should eq(6)
         end
 
@@ -61,7 +61,7 @@ describe CrystalMonads do
           some_to_none_maybe = CrystalMonads::Maybe.lift(1)
           result = some_to_none_maybe.fmap(proc)
 
-          result.should be_a CrystalMonads::None
+          result.should be_a CrystalMonads::Maybe::None
           result.value.should be_nil
         end
       end
@@ -70,14 +70,14 @@ describe CrystalMonads do
         it "returns Some when proc evaluates to non-nil value" do
           result = some_maybe.fmap(arg_proc, true)
 
-          result.should be_a CrystalMonads::Some(Bool)
+          result.should be_a CrystalMonads::Maybe::Some(Bool | Nil)
           result.value.should be_true
         end
 
         it "returns a None when proc evaluates to nil" do
           result = some_maybe.fmap(arg_proc, false)
 
-          result.should be_a CrystalMonads::None
+          result.should be_a CrystalMonads::Maybe::None
           result.value.should be_nil
         end
       end
@@ -86,14 +86,14 @@ describe CrystalMonads do
         it "returns Some when block evaluates to non-nil value" do
           result = some_maybe.fmap(true) { |value, c| true if c }
 
-          result.should be_a CrystalMonads::Some(Bool)
+          result.should be_a CrystalMonads::Maybe::Some(Bool | Nil)
           result.value.should be_true
         end
 
         it "returns a None when block evaluates to nil" do
           result = some_maybe.fmap(false) { |value, c| true if c }
 
-          result.should be_a CrystalMonads::None
+          result.should be_a CrystalMonads::Maybe::None
           result.value.should be_nil
         end
       end
@@ -102,14 +102,14 @@ describe CrystalMonads do
         it "returns Some when block evaluates to non-nil value" do
           result = some_maybe.fmap { |value| value > 4 }
 
-          result.should be_a CrystalMonads::Some(Bool)
+          result.should be_a CrystalMonads::Maybe::Some(Bool)
           result.value.should be_true
         end
 
         it "returns a None when block evaluates to nil" do
           result = some_maybe.fmap { nil }
 
-          result.should be_a CrystalMonads::None
+          result.should be_a CrystalMonads::Maybe::None
           result.value.should be_nil
         end
       end
@@ -142,7 +142,7 @@ describe CrystalMonads do
     end
   end
 
-  describe CrystalMonads::None do
+  describe CrystalMonads::Maybe::None do
     describe "#bind" do
       it "returns self object when given a Proc" do
         proc = -> () { false.should be_true }

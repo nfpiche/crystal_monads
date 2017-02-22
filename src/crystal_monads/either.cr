@@ -58,8 +58,8 @@ module CrystalMonads
         "Right(#{@value})"
       end
 
-      def to_maybe : CrystalMonads::Some(T)
-        CrystalMonads::Some.new(@value)
+      def to_maybe : CrystalMonads::Maybe::Some(T)
+        CrystalMonads::Maybe::Some.new(@value)
       end
     end
 
@@ -104,8 +104,8 @@ module CrystalMonads
         "Left(#{@value})"
       end
 
-      def to_maybe : CrystalMonads::None
-        CrystalMonads::None.new
+      def to_maybe : CrystalMonads::Maybe::None
+        CrystalMonads::Maybe::None.new
       end
     end
   end

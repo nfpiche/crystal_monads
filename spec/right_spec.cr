@@ -119,7 +119,7 @@ describe CrystalMonads::Either::Right do
     it "returns a Some with the Right's value" do
       maybe = right.to_maybe
 
-      maybe.should be_a CrystalMonads::Some(Int32)
+      maybe.should be_a CrystalMonads::Maybe::Some(Int32)
       maybe.value.should eq(right.value)
     end
   end
