@@ -28,4 +28,4 @@ TODO: Write development instructions here
 
 ## Contributors
 
-- [[your-github-name]](https://github.com/[your-github-name]) Nate Piche - creator, maintainer
+- [[nfpiche]](https://github.com/nfpiche) Nate Piche - creator, maintainer
