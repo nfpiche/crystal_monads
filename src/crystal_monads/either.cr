@@ -19,11 +19,7 @@ module CrystalMonads
 
     class Right(T) < Either(T)
       def fmap(*args, &block : T -> _)
-        Right.new(bind { yield @value, *args })
-      end
-
-      def fmap(&block : T -> _)
-        Right.new(bind(&block))
+        Right.new(bind { yield(@value, *args) })
       end
 
       def fmap(*args)
@@ -38,19 +34,11 @@ module CrystalMonads
         proc.call(@value, *args)
       end
 
-      def bind(&block : T -> _)
-        yield(@value)
-      end
-
       def or(proc : Proc, *args) : Right(T)
         self
       end
 
       def or(*args, &block : T -> _) : Right(T)
-        self
-      end
-
-      def or(&block : T -> _) : Right(T)
         self
       end
 
@@ -68,10 +56,6 @@ module CrystalMonads
         self
       end
 
-      def fmap(&block : T -> _) : Left(T)
-        self
-      end
-
       def fmap(*args) : Left(T)
         self
       end
@@ -84,20 +68,12 @@ module CrystalMonads
         self
       end
 
-      def bind(&block : T -> _) : Left(T)
-        self
-      end
-
       def or(proc : Proc, *args)
         proc.call(@value, *args)
       end
 
       def or(*args, &block : T -> _)
         yield(@value, *args)
-      end
-
-      def or(&block : T -> _)
-        yield(@value)
       end
 
       def to_s : String

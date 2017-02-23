@@ -34,6 +34,10 @@ module CrystalMonads
       def exception : Nil
         nil
       end
+
+      def bind(*args, &block : T -> _)
+        yield(@value, *args)
+      end
     end
 
     class Failure(Exception) < Try
@@ -44,6 +48,10 @@ module CrystalMonads
 
       def value : Nil
         nil
+      end
+
+      def bind(*args, &block) : Failure
+        self
       end
     end
   end

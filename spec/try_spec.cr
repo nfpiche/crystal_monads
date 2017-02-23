@@ -51,6 +51,16 @@ describe CrystalMonads::Try do
         success_try.failure?.should be_false
       end
     end
+
+    describe "#bind" do
+      it "returns the value that a block evaluates to" do
+        success_try.bind { |value| value + 5 }.should eq(10)
+      end
+
+      it "returns the value that a block with arguments evaluates to" do
+        success_try.bind(10) { |value, c| value + c.as(Int32) }.should eq(15)
+      end
+    end
   end
 
   describe CrystalMonads::Try::Failure do
@@ -65,6 +75,16 @@ describe CrystalMonads::Try do
     describe "#failure" do
       it "returns false for Failure object" do
         failure_try.failure?.should be_true
+      end
+    end
+
+    describe "#bind" do
+      it "returns self and ignores block" do
+        failure_try.bind { |value| value.should be_false}.should eq(failure_try)
+      end
+
+      it "returns self and ignores block with arguments" do
+        failure_try.bind(10) { |value, c| c.as(Int32).should be_false }.should eq(failure_try)
       end
     end
   end
